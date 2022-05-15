@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <p>Current Account: <span id="address"></span></p>
+  <button id="connect">Connect Wallet</button>
+  <button id="withdraw">Withdraw</button>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.js"></script>
+  <script src="./bank_abi.js"></script>
+  <script>
+    console.log(window.ethereum)
+    const connect = document.getElementById('connect');
+    const withdraw = document.getElementById('withdraw');
+    const addressEle = document.getElementById('address');
+
+    let account = '';
+    let web3 = null;
+    let contract = null;
+
+    connect.addEventListener('click', async () => {
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      account = accounts[0];
+      addressEle.innerHTML = account;
+      web3 = new Web3(ethereum.currentProvider);
+      web3.eth.Contract.setProvider(web3.givenProvider);
+      contract = new web3.eth.Contract(BankContract.abi, BankContract.address)
+    });
+
+    withdraw.addEventListener('click', async () => {
+      console.log(contract, account)
+      if (!contract || !account) return;
+      contract.methods.withdraw()
+        .send({from: account})
+    });
+  </script>
+</body>
+</html>
