@@ -22,19 +22,35 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  defaultNetwork: "ropsten",
   networks: {
+    dev: {
+      url: "http://127.0.0.1:8545",
+      chainId: 31337,
+    },
     ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      url: "https://ropsten.infura.io/v3/98c0068578374398b563ab30e11e8ecb",
+      accounts: [
+        "0xedd1e8da598cef931ab430f1375f86f2a682ba5bf734cbcf17a1eb68b68618e1",
+      ],
     },
   },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+  solidity: {
+    version: "0.8.0",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
   },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
+  },
+  mocha: {
+    timeout: 40000,
   },
 };
